@@ -21,7 +21,7 @@
 ## How to Play
 
 - The game is played on a 3x3 grid.
-- Players take turns placing their symbol (X, non-selectable) on an empty cell.
+- Players take turns placing their symbol on an empty cell.
 - The goal is to get three of your symbols in a row, either horizontally, vertically, or diagonally.
 - If all cells are filled and no player has won, the game ends in a tie.
 
