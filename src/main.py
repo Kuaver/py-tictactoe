@@ -232,10 +232,7 @@ def end_game(result):
         restart = messagebox.askyesno("Game Over!", "It's a tie! Do you want to try again?")
     else:
         restart = messagebox.askyesno("Game Over!", f"{result} wins! Do you want to try again?")
-    if restart:
-        new_game()
-    else:
-        window.quit()
+    new_game() if restart else window.quit()
 
 # Create the menu bar
 menu_bar = tk.Menu(window)
