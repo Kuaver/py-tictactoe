@@ -229,9 +229,13 @@ def end_game(result):
         for button in row:
             button.config(state=tk.DISABLED)
     if result == "tie":
-        messagebox.showinfo("Game Over!", "It's a tie!")
+        restart = messagebox.askyesno("Game Over!", "It's a tie! Do you want to try again?")
     else:
-        messagebox.showinfo("Game Over!", f"{result} wins!")
+        restart = messagebox.askyesno("Game Over!", f"{result} wins! Do you want to try again?")
+    if restart:
+        new_game()
+    else:
+        window.quit()
 
 # Create the menu bar
 menu_bar = tk.Menu(window)
