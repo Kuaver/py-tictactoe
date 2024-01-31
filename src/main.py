@@ -15,6 +15,7 @@ window.title("Tic-Tac-Toe")
 # Get the original background color for use in the dark mode toggle
 original_bg = window.cget("bg")
 
+
 # Function to start a new game
 def new_game():
     """
@@ -26,6 +27,7 @@ def new_game():
 
     # Clear the memo dict
     memo.clear()
+
 
 # Function to toggle dark mode
 def toggle_dark_mode():
@@ -54,6 +56,7 @@ def toggle_dark_mode():
                     activeforeground="#000000",
                 )  # Original background with black text
 
+
 # Function to make a move
 def make_move(row, col):
     """
@@ -71,6 +74,7 @@ def make_move(row, col):
                 end_game("O")
             elif is_board_full():
                 end_game("tie")
+
 
 # Function for AI move
 def ai_move():
@@ -101,6 +105,7 @@ def check_line(char, *args):
     """
     return all(cell == char for cell in args)
 
+
 # Function to evaluate the score of a board state
 def evaluate(board):
     """
@@ -126,8 +131,10 @@ def evaluate(board):
         return 1
     return 0
 
+
 # Create a dictionary to store memoized scores
 memo = {}
+
 
 # Function for minimax algorithm with alpha-beta pruning and memoization
 def minimax(board, depth, is_maximizing, alpha, beta):
@@ -157,7 +164,9 @@ def minimax(board, depth, is_maximizing, alpha, beta):
     ]
 
     # Sort the possible moves based on their potential scores
-    possible_moves.sort(key=lambda move: get_move_score(move, is_maximizing), reverse=is_maximizing)
+    possible_moves.sort(
+        key=lambda move: get_move_score(move, is_maximizing), reverse=is_maximizing
+    )
 
     for move in possible_moves:
         i, j = move
@@ -178,6 +187,7 @@ def minimax(board, depth, is_maximizing, alpha, beta):
 
     return best_score
 
+
 # Function to get the score of a move
 def get_move_score(move, is_maximizing):
     """
@@ -189,12 +199,14 @@ def get_move_score(move, is_maximizing):
     board[i][j] = " "
     return score
 
+
 # Function to check if the board is full
 def is_board_full():
     """
     Checks if the game board is full.
     """
     return all(" " not in row for row in board)
+
 
 # Function to check if there is a winner
 def check_winner(player):
@@ -210,6 +222,7 @@ def check_winner(player):
         player, *[board[i][BOARD_SIZE - i - 1] for i in range(BOARD_SIZE)]
     )
 
+
 # Function to update the board GUI
 def update_board_gui():
     """
@@ -220,6 +233,7 @@ def update_board_gui():
             text=board[i][j], state=tk.DISABLED if board[i][j] != " " else tk.NORMAL
         )
 
+
 # Function to end the game
 def end_game(result):
     """
@@ -229,10 +243,15 @@ def end_game(result):
         for button in row:
             button.config(state=tk.DISABLED)
     if result == "tie":
-        restart = messagebox.askyesno("Game Over!", "It's a tie! Do you want to try again?")
+        restart = messagebox.askyesno(
+            "Game Over!", "It's a tie! Do you want to try again?"
+        )
     else:
-        restart = messagebox.askyesno("Game Over!", f"{result} wins! Do you want to try again?")
+        restart = messagebox.askyesno(
+            "Game Over!", f"{result} wins! Do you want to try again?"
+        )
     new_game() if restart else window.quit()
+
 
 # Create the menu bar
 menu_bar = tk.Menu(window)
