@@ -6,14 +6,14 @@ from tkinter import messagebox
 BOARD_SIZE = 3
 
 # Create the game board
-board = [[" " for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
+game_board = [[" " for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
 
 # Create the main window
-window = tk.Tk()
-window.title("Tic-Tac-Toe")
+main_window = tk.Tk()
+main_window.title("Tic-Tac-Toe")
 
 # Get the original background color for use in the dark mode toggle
-original_bg = window.cget("bg")
+original_bg_color = main_window.cget("bg")
 
 
 # Function to start a new game
@@ -21,8 +21,8 @@ def new_game():
     """
     Resets the game board and updates the GUI.
     """
-    global board
-    board = [[" " for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
+    global game_board
+    game_board = [[" " for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
     update_board_gui()
 
     # Clear the memo dict
@@ -34,9 +34,9 @@ def toggle_dark_mode():
     """
     Toggles the dark mode of the GUI.
     """
-    current_bg = window.cget("bg")
-    if current_bg == original_bg:
-        window.configure(bg="#1f1f1f")  # Dark gray background
+    current_bg_color = main_window.cget("bg")
+    if current_bg_color == original_bg_color:
+        main_window.configure(bg="#1f1f1f")  # Dark gray background
         for row in buttons:
             for button in row:
                 button.configure(
@@ -46,13 +46,13 @@ def toggle_dark_mode():
                     activeforeground="#ffffff",
                 )  # Dark gray button with white text
     else:
-        window.configure(bg=original_bg)
+        main_window.configure(bg=original_bg_color)
         for row in buttons:
             for button in row:
                 button.configure(
-                    bg=original_bg,
+                    bg=original_bg_color,
                     fg="#000000",
-                    activebackground=original_bg,
+                    activebackground=original_bg_color,
                     activeforeground="#000000",
                 )  # Original background with black text
 
@@ -63,8 +63,8 @@ def make_move(row, col):
     Makes a move on the game board and updates the GUI.
     Checks for a win or tie after the move.
     """
-    if board[row][col] == " ":
-        board[row][col] = "X"
+    if game_board[row][col] == " ":
+        game_board[row][col] = "X"
         update_board_gui()
         if check_winner("X"):
             end_game("X")
@@ -85,16 +85,16 @@ def ai_move():
     best_score = float("-inf")
     best_move = None
     for i, j in itertools.product(range(BOARD_SIZE), range(BOARD_SIZE)):
-        if board[i][j] == " ":
-            board[i][j] = "O"
-            score = minimax(board, 0, False, float("-inf"), float("inf"))
-            board[i][j] = " "
+        if game_board[i][j] == " ":
+            game_board[i][j] = "O"
+            score = minimax(game_board, 0, False, float("-inf"), float("inf"))
+            game_board[i][j] = " "
             if score > best_score:
                 best_score = score
                 best_move = (i, j)
     if best_move is not None:
         row, col = best_move
-        board[row][col] = "O"
+        game_board[row][col] = "O"
         update_board_gui()
 
 
@@ -194,9 +194,9 @@ def get_move_score(move, is_maximizing):
     Returns the score of a move for the minimax algorithm.
     """
     i, j = move
-    board[i][j] = "O" if is_maximizing else "X"
-    score = evaluate(board)
-    board[i][j] = " "
+    game_board[i][j] = "O" if is_maximizing else "X"
+    score = evaluate(game_board)
+    game_board[i][j] = " "
     return score
 
 
@@ -205,7 +205,7 @@ def is_board_full():
     """
     Checks if the game board is full.
     """
-    return all(" " not in row for row in board)
+    return all(" " not in row for row in game_board)
 
 
 # Function to check if there is a winner
@@ -214,12 +214,14 @@ def check_winner(player):
     Checks if a player has won the game.
     """
     for i in range(BOARD_SIZE):
-        if check_line(player, *board[i]) or check_line(
-            player, *[board[j][i] for j in range(BOARD_SIZE)]
+        if check_line(player, *game_board[i]) or check_line(
+            player, *[game_board[j][i] for j in range(BOARD_SIZE)]
         ):
             return True
-    return check_line(player, *[board[i][i] for i in range(BOARD_SIZE)]) or check_line(
-        player, *[board[i][BOARD_SIZE - i - 1] for i in range(BOARD_SIZE)]
+    return check_line(
+        player, *[game_board[i][i] for i in range(BOARD_SIZE)]
+    ) or check_line(
+        player, *[game_board[i][BOARD_SIZE - i - 1] for i in range(BOARD_SIZE)]
     )
 
 
@@ -230,7 +232,8 @@ def update_board_gui():
     """
     for i, j in itertools.product(range(BOARD_SIZE), range(BOARD_SIZE)):
         buttons[i][j].config(
-            text=board[i][j], state=tk.DISABLED if board[i][j] != " " else tk.NORMAL
+            text=game_board[i][j],
+            state=tk.DISABLED if game_board[i][j] != " " else tk.NORMAL,
         )
 
 
@@ -250,18 +253,18 @@ def end_game(result):
         restart = messagebox.askyesno(
             "Game Over!", f"{result} wins! Do you want to try again?"
         )
-    new_game() if restart else window.quit()
+    new_game() if restart else main_window.quit()
 
 
 # Create the menu bar
-menu_bar = tk.Menu(window)
-window.config(menu=menu_bar)
+menu_bar = tk.Menu(main_window)
+main_window.config(menu=menu_bar)
 
 # Create the "Game" menu
 game_menu = tk.Menu(menu_bar, tearoff=0)
 game_menu.add_command(label="New Game", command=new_game)
 game_menu.add_separator()
-game_menu.add_command(label="Exit", command=window.quit)
+game_menu.add_command(label="Exit", command=main_window.quit)
 menu_bar.add_cascade(label="Game", menu=game_menu)
 
 # Create the "Design" menu
@@ -275,7 +278,7 @@ for i in range(BOARD_SIZE):
     row = []
     for j in range(BOARD_SIZE):
         button = tk.Button(
-            window,
+            main_window,
             text=" ",
             width=3,
             height=1,
@@ -287,4 +290,4 @@ for i in range(BOARD_SIZE):
     buttons.append(row)
 
 # Start the game
-window.mainloop()
+main_window.mainloop()
